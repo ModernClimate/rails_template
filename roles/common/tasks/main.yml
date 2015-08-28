@@ -1,0 +1,4 @@
+---
+- tasks:
+  - include: tasks/essentials.yml
+
