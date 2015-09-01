@@ -1,4 +1,3 @@
 ---
-- tasks:
-  - include: tasks/essentials.yml
+- include: essentials.yml
 
