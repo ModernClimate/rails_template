@@ -1,4 +1,4 @@
 # {{ ansible_managed }}
 passenger_root {{ passenger_root.stdout }};
-passenger_ruby {{ ruby.path }};
+passenger_ruby {{ ruby.path }}/bin/ruby;
 passenger_nodejs {{ nodejs.path }};

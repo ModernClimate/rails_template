@@ -11,4 +11,3 @@
 - hosts: databases
   roles:
     - db
-

@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
 server {
   listen {{ web.port }};
-  rails_env {{ item.rails_env }};
+  rails_env {{ rails.env }};
   passenger_enabled on;
   server_name {{ item.server_name }};
   root {{ item.root }}/public;
