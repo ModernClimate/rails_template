@@ -19,14 +19,3 @@
   sudo: true
   command: /opt/rubies/ruby-{{ ruby.version }}/bin/gem install bundler --no-user-install --no-document
 
-- name: clone chruby
-  sudo: true
-  git: repo=https://github.com/postmodern/chruby.git dest=/usr/local/src/chruby update=yes
-
-- name: install chruby
-  sudo: true
-  command: make install chdir=/usr/local/src/chruby creates=/usr/local/share/chruby
-
-- name: install /etc/profile.d/chruby.sh
-  sudo: true
-  copy: src=chruby.sh dest=/etc/profile.d/chruby.sh owner=root group=root mode=0644

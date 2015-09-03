@@ -10,5 +10,3 @@
     - package: build-essential
     - package: git
     - package: vim
-    #- package: emacs24
-    #- package: nodejs

@@ -17,4 +17,3 @@
     - package: libncurses5-dev
     - package: libxml2-dev
     - package: libxslt-dev
-    - package: nodejs

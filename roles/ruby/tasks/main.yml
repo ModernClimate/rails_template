@@ -1,7 +1,0 @@
----
-- include: ruby-essentials.yml
-- include: ruby.yml
-
-- name: install gems through bundler
-  command: "{{ ruby.path }}/bin/bundle install chdir={{ rails.path }}"
-

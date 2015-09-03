@@ -1,0 +1,19 @@
+---
+ruby:
+  version: 2.2.0
+  path: /opt/rubies/ruby-2.2.0
+
+rails:
+  app_name: "{{ app_name }}"
+  path: "/home/vagrant/{{ app_name }}"
+  env: development
+
+nodejs:
+  path: /usr/bin/nodejs
+
+web:
+  port: 3000
+
+virtual_hosts:
+  - server_name: "{{ rails.app_name }}.dev"
+    root: "/home/vagrant/{{ rails.app_name }}"
