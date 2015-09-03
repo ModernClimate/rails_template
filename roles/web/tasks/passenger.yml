@@ -1,22 +1,3 @@
----
-#- name: update apt sources
-  #sudo: yes
-  #apt: update_cache=yes
-
-#- name: Add key for passenger
-  #apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0xAC40B2F7 state=present
-        
-#- name: Apt via https
-  #apt: name=apt-transport-https state=present
-
-#- name: Apt add passenger to list  
-
-#- name: install essential software via apt
-  #sudo: true
-  #apt: name={{ item.package }}
-  #with_items:
-    #- package: passenger
-
 - name: Remove apache2
   apt: name=apache2 state=absent
 
@@ -50,10 +31,10 @@
     pkg=passenger
     update_cache=yes
 
-#- name: Ensure the nginx configuration file is set
-  #copy: >
-    #src=nginx.conf
-    #dest=/etc/nginx/nginx.conf
+- name: Ensure the nginx configuration file is set
+  template:
+    src: nginx.conf.j2
+    dest: /etc/nginx/nginx.conf
 
 - name: Ensure nginx is running
   service: >
