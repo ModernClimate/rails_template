@@ -1,3 +1,7 @@
 ---
 - include: ruby-essentials.yml
 - include: ruby.yml
+
+- name: install gems through bundler
+  command: /opt/rubies/ruby-2.2.0/bin/bundle install chdir=/home/vagrant/natcam-data-service
+

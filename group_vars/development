@@ -3,8 +3,11 @@ ruby:
   version: 2.2.0
   path: /opt/rubies/ruby-2.2.0/bin/ruby
 
+nodejs:
+  path: /usr/bin/nodejs
+
 # TODO: Make root var dynamic!
 virtual_hosts:
   - server_name: app.dev
     rails_env: development
-    root: /home/vagrant/src/natcam-data-service
+    root: /home/vagrant/natcam-data-service
