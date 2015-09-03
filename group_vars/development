@@ -6,6 +6,9 @@ ruby:
 nodejs:
   path: /usr/bin/nodejs
 
+web:
+  port: 3000
+
 # TODO: Make root var dynamic!
 virtual_hosts:
   - server_name: app.dev
