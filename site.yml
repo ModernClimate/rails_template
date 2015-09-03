@@ -3,3 +3,12 @@
   roles:
     - common
 
+- hosts: webservers
+  roles:
+    - web
+    - ruby
+
+- hosts: databases
+  roles:
+    - db
+

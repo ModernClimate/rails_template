@@ -1,0 +1,13 @@
+---
+- name: update apt sources
+  sudo: yes
+  apt: update_cache=yes
+
+- name: install db essential software via apt
+  sudo: true
+  apt: name={{ item.package }}
+  with_items:
+    - package: python-psycopg2
+    - package: postgresql-9.3
+    - package: postgresql-client
+    - package: libpq-dev

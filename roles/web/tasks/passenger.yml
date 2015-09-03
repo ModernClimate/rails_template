@@ -1,0 +1,100 @@
+---
+#- name: update apt sources
+  #sudo: yes
+  #apt: update_cache=yes
+
+#- name: Add key for passenger
+  #apt_key: url=http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0xAC40B2F7 state=present
+        
+#- name: Apt via https
+  #apt: name=apt-transport-https state=present
+
+#- name: Apt add passenger to list  
+
+#- name: install essential software via apt
+  #sudo: true
+  #apt: name={{ item.package }}
+  #with_items:
+    #- package: passenger
+
+- name: Remove apache2
+  apt: name=apache2 state=absent
+
+#
+# https://valdhaus.co/writings/ansible-vs-shell-scripts/
+#
+- name: Ensure the PGP key is installed
+  apt_key: >
+    state=present
+    id=AC40B2F7
+    url="http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x561F9B9CAC40B2F7"
+
+- name: Ensure https support for apt is installed
+  apt: >
+    state=present
+    pkg=apt-transport-https
+
+- name: Ensure the passenger apt repository is added
+  apt_repository: >
+    state=present
+    repo='deb https://oss-binaries.phusionpassenger.com/apt/passenger {{ansible_distribution_release}} main'
+
+- name: Ensure nginx is installed
+  apt: >
+    state=present
+    pkg=nginx-full
+
+- name: Ensure passenger is installed
+  apt: >
+    state=present
+    pkg=passenger
+    update_cache=yes
+
+#- name: Ensure the nginx configuration file is set
+  #copy: >
+    #src=nginx.conf
+    #dest=/etc/nginx/nginx.conf
+
+- name: Ensure nginx is running
+  service: >
+    name=nginx
+    state=started
+
+#
+# http://www.nickhammond.com/vagrant-and-ansible-for-local-development/
+#
+- name: Read passenger configuration
+  register: passenger_root
+  command: passenger-config --root
+  changed_when: false
+
+- name: Add passenger configuration
+  template:
+    src: passenger.conf.j2
+    dest: /etc/nginx/conf.d/passenger.conf
+  notify: nginx reload
+
+- name: Add virtualhost configuration
+  template:
+    src: virtualhost.conf.j2
+    dest: /etc/nginx/sites-available/{{ item.server_name }}
+  with_items: virtual_hosts
+  notify: nginx reload
+
+- name: Disable virtualhosts
+  file:
+    path: /etc/nginx/sites-enabled/{{ item.server_name }}
+    state: absent
+  when: item.disabled is defined
+  with_items: virtual_hosts
+  notify: nginx reload
+
+- name: Enable virtualhosts
+  file:
+    src: /etc/nginx/sites-available/{{ item.server_name }}
+    dest: /etc/nginx/sites-enabled/{{ item.server_name }}
+    state: link
+  when: item.disabled is not defined
+  with_items: virtual_hosts
+  notify: nginx reload
+

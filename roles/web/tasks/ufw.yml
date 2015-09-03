@@ -1,0 +1,10 @@
+---
+- name: Set firewall default policy
+  ufw: state=enabled policy=reject
+
+- name: Allow ssh from private network defined in Vagrantfile
+  ufw: rule=allow port=22
+
+- name: Allow ssh from private network defined in Vagrantfile
+  ufw: rule=allow port=3000
+

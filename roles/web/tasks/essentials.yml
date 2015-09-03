@@ -1,0 +1,37 @@
+---
+- name: update apt sources
+  sudo: yes
+  apt: update_cache=yes
+
+- name: Remove apache2
+  apt: name=apache2 state=absent
+
+- name: install essential software via apt
+  sudo: true
+  apt: name={{ item.package }}
+  with_items:
+    - package: build-essential
+    - package: git
+    - package: vim
+    - package: emacs24
+    - package: nodejs
+    - package: nginx
+    - package: nginx-extras
+    - package: nginx-doc
+    - package: python-psycopg2
+    - package: postgresql-9.3
+    - package: postgresql-client
+    - package: libpq-dev
+    - package: sqlite3
+    - package: libsqlite3-dev
+    - package: libyaml-dev
+    - package: libgdbm-dev
+    - package: libreadline-dev
+    - package: libncurses5-dev
+    - package: libxml2-dev
+    - package: libxslt-dev
+    - package: imagemagick
+    - package: libmagickwand-dev
+    - package: libmagickcore-dev
+    - package: xvfb
+
