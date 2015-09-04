@@ -1,13 +1,13 @@
 ---
 - hosts: all
   roles:
-    - common
+    - internal/common
 
 - hosts: webservers
   roles:
-    - web
-    - ruby
-    - rails
+    - internal/web
+    - internal/ruby
+    - internal/rails
 
 - hosts: databases
   roles:
