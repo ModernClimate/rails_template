@@ -1,36 +1,28 @@
 - name: Remove apache2
   apt: name=apache2 state=absent
 
-#
-# https://valdhaus.co/writings/ansible-vs-shell-scripts/
-#
 - name: Ensure the PGP key is installed
   apt_key: >
     state=present
     id=AC40B2F7
     url="http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x561F9B9CAC40B2F7"
-
 - name: Ensure https support for apt is installed
   apt: >
     state=present
     pkg=apt-transport-https
-
 - name: Ensure the passenger apt repository is added
   apt_repository: >
     state=present
     repo='deb https://oss-binaries.phusionpassenger.com/apt/passenger {{ansible_distribution_release}} main'
-
 - name: Ensure nginx is installed
   apt: >
     state=present
     pkg=nginx-full
-
 - name: Ensure passenger is installed
   apt: >
     state=present
     pkg=passenger
     update_cache=yes
-
 - name: Ensure the nginx configuration file is set
   template:
     src: nginx.conf.j2
@@ -41,9 +33,6 @@
     name=nginx
     state=started
 
-#
-# http://www.nickhammond.com/vagrant-and-ansible-for-local-development/
-#
 - name: Read passenger configuration
   register: passenger_root
   command: passenger-config --root

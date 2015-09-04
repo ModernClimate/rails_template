@@ -15,6 +15,13 @@
   sudo: true
   command: /usr/local/bin/ruby-install ruby {{ ruby.version }} creates={{ ruby.path }}
 
+- name: move our ruby bin to the front of the path
+  lineinfile:
+    dest: /home/vagrant/.profile
+    state: present
+    line: PATH="{{ ruby.path }}/bin:$PATH"
+    regexp: "{{ ruby.path }}/bin"
+
 - name: install bundler
   sudo: true
   command: /opt/rubies/ruby-{{ ruby.version }}/bin/gem install bundler --no-user-install --no-document

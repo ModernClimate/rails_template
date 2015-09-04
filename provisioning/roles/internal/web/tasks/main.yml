@@ -1,5 +1,5 @@
 ---
 - include: essentials.yml
 - include: ufw.yml
-- include: passenger.yml
+- include: passenger-nginx.yml
 
