@@ -18,6 +18,8 @@ gem 'jquery-rails'
 gem 'turbolinks'
 gem 'jbuilder', '~> 2.0'
 gem 'pg'
+gem 'sidekiq'
+gem 'sinatra'
 
 gem_group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
@@ -39,22 +41,33 @@ rake "db:migrate"
 environment 'config.action_mailer.default_url_options = {host: "http://localhost:3000"}', env: "development"
 environment 'config.action_mailer.default_url_options = {host: "http://yourwebsite.example.com"}', env: "production"
 
+remove_file "config/routes.rb"
+file "config/routes.rb", <<-CODE
+Rails.application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/sidekiq'
+
+  devise_for :users
+  resources :users
+end
+CODE
+
 
 #
 # Travis
 #
 
 file ".travis.yml", <<-CODE
-  language: ruby
-  
-  rvm:
-    - "2.2"
-  
-  notifications:
-    email:
-      recipients:
-        - jason@ackmanndickenson.com
-        - will@ackmanndickenson.com
+language: ruby
+
+rvm:
+  - "2.2"
+
+notifications:
+  email:
+    recipients:
+      - jason@ackmanndickenson.com
+      - will@ackmanndickenson.com
 CODE
 
 

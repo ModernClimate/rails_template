@@ -7,6 +7,36 @@ rails:
   app_name: "{{ app_name }}"
   path: "/home/vagrant/{{ app_name }}"
   env: development
+  databases:
+    - database: "{{ app_name }}_development"
+      env: development
+      username: vagrant
+      password: vagrant
+    - database: "{{ app_name }}_test"
+      env: test
+      username: vagrant
+      password: vagrant
+
+postgresql_version: 9.3
+postgresql_encoding: 'UTF-8'
+postgresql_locale: 'en_US.UTF-8'
+postgresql_admin_user: "postgres"
+postgresql_default_auth_method: "trust"
+postgresql_cluster_name: "main"
+postgresql_cluster_reset: false
+
+postgresql_databases:
+  - name: "{{ app_name }}_development"
+    hstore: yes
+    uuid_ossp: yes
+  - name: "{{ app_name }}_test"
+    hstore: yes
+    uuid_ossp: yes
+
+postgresql_users:
+  - name: vagrant
+    pass: vagrant
+    encrypted: no       # denotes if the password is already encrypted.
 
 nodejs:
   path: /usr/bin/nodejs

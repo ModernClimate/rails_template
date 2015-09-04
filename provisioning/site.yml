@@ -11,4 +11,5 @@
 
 - hosts: databases
   roles:
-    - db
+    - external/ANXS.postgresql
+    - external/DavidWittman.redis

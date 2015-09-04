@@ -20,9 +20,16 @@
 - name: create new rails app from template
   command: chdir={{ rails.path }} {{ ruby.path }}/bin/rails new {{ rails.path }} -m {{ rails.path }}/rails_template.rb
 
-- name: generate rails skeleton
-  command: "{{ ruby.path }}/bin/bundle install chdir={{ rails.path }}"
-
 - name: bundle install
   command: "{{ ruby.path }}/bin/bundle install chdir={{ rails.path }}"
+
+- name: create database.yml file
+  template:
+    src: database.yml.j2
+    dest: "{{ rails.path }}/config/database.yml"
+
+- name: create initial gitignore file
+  template:
+    src: gitignore.j2
+    dest: "{{ rails.path }}/.gitignore"
 
