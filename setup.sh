@@ -22,12 +22,16 @@ cp -R . $app_dir
 echo "Creating bin files"
 echo "ansible-playbook --inventory-file=provisioning/inventories/staging --user root --ask-pass --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/bootstrap.yml" > $app_dir/provisioning/bin/bootstrap-staging
 echo "ansible-playbook --inventory-file=provisioning/inventories/staging --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml" > $app_dir/provisioning/bin/provision-staging
+echo "ansible-playbook --inventory-file=provisioning/inventories/staging --user deploy --sudo --ask-vault-pass --extra-vars '{"app_name":"natcam_data_service"}' -vvvv provisioning/deploy.yml" > $app_dir/provisioning/bin/deploy-staging
 chmod 755 $app_dir/provisioning/bin/bootstrap-staging
 chmod 755 $app_dir/provisioning/bin/provision-staging
+chmod 755 $app_dir/provisioning/bin/deploy-staging
 echo "ansible-playbook --inventory-file=provisioning/inventories/production --user root --ask-pass --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/bootstrap.yml" > $app_dir/provisioning/bin/bootstrap-production
 echo "ansible-playbook --inventory-file=provisioning/inventories/production --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml" > $app_dir/provisioning/bin/provision-production
+echo "ansible-playbook --inventory-file=provisioning/inventories/production --user deploy --sudo --ask-vault-pass --extra-vars '{"app_name":"natcam_data_service"}' -vvvv provisioning/deploy.yml" > $app_dir/provisioning/bin/deploy-production
 chmod 755 $app_dir/provisioning/bin/bootstrap-production
 chmod 755 $app_dir/provisioning/bin/provision-production
+chmod 755 $app_dir/provisioning/bin/deploy-production
 
 echo "Cleaning up files"
 rm -rf $app_dir/.git

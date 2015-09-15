@@ -13,7 +13,7 @@
   command: "{{ ruby.path }}/bin/gem install rails --no-document"
 
 - name: initialize rails directory
-  file: path={{ rails.path }} state=directory
+  file: path={{ rails.path }} state=directory owner={{ username }} group={{ username }}
 
 - name: add rails template file
   template:
