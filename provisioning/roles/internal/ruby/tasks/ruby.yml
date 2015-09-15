@@ -17,7 +17,7 @@
 
 - name: move our ruby bin to the front of the path
   lineinfile:
-    dest: /home/vagrant/.profile
+    dest: "{{ user_home }}/.profile"
     state: present
     line: PATH="{{ ruby.path }}/bin:$PATH"
     regexp: "{{ ruby.path }}/bin"

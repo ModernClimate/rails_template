@@ -1,2 +1,13 @@
+#[localhost]
+#localhost ansible_connection=local
+
 [webservers]
-# Add your staging server IP(s)
+# Add your hosts here
+
+[databases]
+# Add your hosts here
+
+[staging:children]
+webservers
+databases
+

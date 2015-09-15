@@ -12,6 +12,9 @@
 - name: install rails
   command: "{{ ruby.path }}/bin/gem install rails --no-document"
 
+- name: initialize rails directory
+  file: path={{ rails.path }} state=directory
+
 - name: add rails template file
   template:
     src: rails_template.rb.j2

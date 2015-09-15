@@ -1,0 +1,63 @@
+---
+- hosts: all
+  vars_files:
+    - group_vars/staging
+
+  tasks:
+  #
+  # TODO: Should we just keep password generaed by Rackspace? Discuss this with Sean KP.
+  #
+  #- name: Change root password
+    #user:
+      #name=root
+      #password={{ root_password }}
+
+  - name: Add deploy user
+    user:
+      name={{ username }}
+      password={{ password }}
+      shell=/bin/bash
+
+  - name: Add SSH public key to deploy user
+    authorized_key:
+      user={{ username }}
+      key="{{ lookup('file', "~/.ssh/id_rsa.pub") }}"
+
+  - name: Add deploy user to sudoers
+    lineinfile:
+      "dest=/etc/sudoers
+      regexp='^{{ username }} ALL'
+      line='{{ username }} ALL=(ALL) NOPASSWD: ALL'
+      state=present"
+
+  - name: Disallow root SSH access
+    lineinfile:
+      dest=/etc/ssh/sshd_config
+      regexp="^PermitRootLogin"
+      line="PermitRootLogin no"
+      state=present
+    notify:
+      - restart sshd
+
+  - name: Disallow SSH password authentication
+    lineinfile:
+      dest=/etc/ssh/sshd_config
+      regexp="^PasswordAuthentication"
+      line="PasswordAuthentication no"
+      state=present
+    notify:
+      - restart sshd
+
+  - name: Disallow SSH GSS API authentication
+    lineinfile:
+      dest=/etc/ssh/sshd_config
+      regexp="^GSSAPIAuthentication"
+      line="GSSAPIAuthentication no"
+      state=present
+    notify:
+      - restart sshd
+
+  handlers:
+  - name: restart sshd
+    command: service ssh restart
+

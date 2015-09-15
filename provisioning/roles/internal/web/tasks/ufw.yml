@@ -1,10 +1,13 @@
 ---
 - name: Set firewall default policy
+  sudo: yes
   ufw: state=enabled policy=reject
 
-- name: Allow ssh from private network defined in Vagrantfile
-  ufw: rule=allow port=22
+- name: Allow ssh
+  sudo: yes
+  ufw: rule=allow port={{ ssh.port }}
 
-- name: Allow ssh from private network defined in Vagrantfile
+- name: Allow http
+  sudo: yes
   ufw: rule=allow port={{ web.port }}
 

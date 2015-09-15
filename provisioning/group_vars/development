@@ -1,4 +1,14 @@
 ---
+username: vagrant
+password: vagrant
+user_home: /home/vagrant
+
+ssh:
+  port: 22
+
+web:
+  port: 3000
+
 ruby:
   version: 2.2.0
   path: /opt/rubies/ruby-2.2.0
@@ -40,9 +50,6 @@ postgresql_users:
 
 nodejs:
   path: /usr/bin/nodejs
-
-web:
-  port: 3000
 
 virtual_hosts:
   - server_name: "{{ rails.app_name }}.dev"
