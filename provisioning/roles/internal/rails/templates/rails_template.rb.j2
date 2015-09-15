@@ -1,8 +1,5 @@
 app_name = '{{ rails.app_name }}'
 
-# Prevent automatic bundle install. An Ansible task will take care of this later on.
-def run_bundle; end
-
 #
 # Gems
 #
@@ -11,7 +8,7 @@ remove_file "Gemfile"
 run "touch Gemfile"
 
 add_source 'https://rubygems.org'
-#gem "devise"
+gem "devise"
 gem 'rails', '4.2.4'
 gem 'sass-rails', '~> 5.0'
 gem 'uglifier', '>= 1.3.0'
@@ -32,9 +29,6 @@ end
 gem_group :development do
   gem 'web-console', '~> 2.0'
   gem 'spring'
-  gem 'capistrano', '~> 3.4.0'
-  gem 'capistrano-bundler'
-  gem 'capistrano-rails'
 end
 
 #generate "devise:install"
@@ -57,20 +51,49 @@ CODE
 
 
 #
+# DB
+#
+
+remove_file "config/database.yml"
+file "config/database.yml", <<-CODE
+{% for db in rails.databases %}  
+{{ db.env }}:
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  pool: 50
+  database: {{ db.database }}
+  username: {{ db.username }}
+  password: {{ db.password }}
+{% endfor %}
+CODE
+
+file "config/database.yml.travis", <<-CODE
+test:
+  adapter: postgresql
+  encoding: unicode
+  database: {{ app_name }}_test
+  username: postgres
+CODE
+
+
+#
 # Travis
 #
 
 file ".travis.yml", <<-CODE
 language: ruby
-
-rvm:
-  - "2.2"
-
-notifications:
-  email:
-    recipients:
-      - jason@ackmanndickenson.com
-      - will@ackmanndickenson.com
+rvm: "{{ ruby.version }}"
+addons:
+  postgresql: "{{ postgresql_version }}"
+before_install:
+  - cp config/database.yml.travis config/database.yml
+install:
+  - bundle install --path vendor/bundle
+before_script:
+  - psql -c 'create database {{ app_name }}_test;' -U postgres
+  - RAILS_ENV=test bundle exec rake db:migrate --trace
+  - bundle exec rake db:test:prepare
 CODE
 
 
@@ -78,9 +101,9 @@ CODE
 # Git
 #
 
-after_bundle do
-  git :init
-  git add: "."
-  git commit: %Q{ -m 'Initial commit' }
-end
+file ".gitignore", <<-CODE
+config/database.yml
+config/secrets.yml
+provisioning/roles/external/**/*
+CODE
 
