@@ -4,5 +4,5 @@ server {
   rails_env {{ rails.env }};
   passenger_enabled on;
   server_name {{ item.server_name }};
-  root {{ item.root }}/public;
+  root {{ item.root }}/current/public;
 }

@@ -6,23 +6,28 @@
     state=present
     id=AC40B2F7
     url="http://keyserver.ubuntu.com/pks/lookup?op=get&fingerprint=on&search=0x561F9B9CAC40B2F7"
+
 - name: Ensure https support for apt is installed
   apt: >
     state=present
     pkg=apt-transport-https
+
 - name: Ensure the passenger apt repository is added
   apt_repository: >
     state=present
     repo='deb https://oss-binaries.phusionpassenger.com/apt/passenger {{ansible_distribution_release}} main'
+
 - name: Ensure nginx is installed
   apt: >
     state=present
     pkg=nginx-full
+
 - name: Ensure passenger is installed
   apt: >
     state=present
     pkg=passenger
     update_cache=yes
+
 - name: Ensure the nginx configuration file is set
   template:
     src: nginx.conf.j2
@@ -32,6 +37,11 @@
   service: >
     name=nginx
     state=started
+
+- name: Disable the default site
+  file: path=/etc/nginx/sites-enabled/default state=absent
+  notify:
+  - nginx reload
 
 - name: Read passenger configuration
   register: passenger_root

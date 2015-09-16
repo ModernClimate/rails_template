@@ -15,29 +15,48 @@
 
     - debug: msg='Updated repo from {{ git.before }} to {{ git.after }}'
 
-    #- name: Symlink shared files
-      #file: src={{ shared_path }}/{{ item }} dest={{ this_release_path }}/{{ item }} state=link force=yes
-      #with_items:
-        #- config/database.yml
-        #- config/secrets.yml
-        #- log
-        #- tmp
-        #- vendor/bundle
+    - name: Create shared dir
+      file: path={{ shared_path }} state=directory
 
-    #- name: Install bundle
-      #command: 'bundle install --deployment --without="development test"'
-      #args:
-        #chdir: '{{ this_release_path }}'
+    - name: Create shared sub-dirs
+      file: path={{ shared_path }}/{{ item }} state=directory
+      with_items:
+        - config
+        - log
+        - tmp
+        - vendor
+        - vendor/bundle
 
-    #- name: Precompile assets
-      #command: rake assets:precompile chdir={{ this_release_path }}
-      #environment:
-        #RAILS_ENV: '{{ rails_env }}'
+    - name: Create config files
+      template:
+        src: "roles/internal/rails/templates/{{ item }}.j2"
+        dest: "{{ this_release_path }}/{{ item }}"
+        force: yes
+      with_items:
+        - config/database.yml
+        - config/secrets.yml
 
-    #- name: Migrate database
-      #command: rake db:migrate chdir={{ this_release_path }}
-      #environment:
-        #RAILS_ENV: '{{ rails_env }}'
+    - name: Symlink shared files
+      file: src={{ shared_path }}/{{ item }} dest={{ this_release_path }}/{{ item }} state=link force=yes
+      with_items:
+        - log
+        - tmp
+        - vendor/bundle
+
+    - name: Install gems
+      command: '{{ ruby.path }}/bin/bundle install --deployment --without="development test"'
+      args:
+        chdir: '{{ this_release_path }}'
+
+    - name: Precompile assets
+      command: "{{ ruby.path }}/bin/rake assets:precompile chdir={{ this_release_path }}"
+      environment:
+        RAILS_ENV: '{{ rails.env }}'
+
+    - name: Migrate database
+      command: "{{ ruby.path }}/bin/rake db:migrate chdir={{ this_release_path }}"
+      environment:
+        RAILS_ENV: '{{ rails.env }}'
 
     - name: Symlink new release
       file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes
