@@ -12,8 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Development
   #
   config.vm.define :development do |dev|
-    # TODO: This needs to be dynamic. Use a template to generate Vagrantfile???
-    dev.vm.synced_folder ".", "/home/vagrant/natcam_data_service"
+    dev.vm.synced_folder ".", "/home/vagrant/__APP_NAME__"
 
     dev.vm.box = "ubuntu/trusty64"
     dev.vm.box_url = "http://files.vagrantup.com/trusty64.box"
@@ -29,9 +28,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.inventory_path = "provisioning/inventories/development"
       ansible.verbose = "vvvv"
       ansible.sudo = true
-      # TODO: This needs to be dynamic. Use a template to generate Vagrantfile???
       ansible.extra_vars = {
-        app_name: "natcam_data_service"
+        app_name: "__APP_NAME__"
       }
     end
   end

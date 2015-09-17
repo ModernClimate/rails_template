@@ -7,7 +7,6 @@ if [ -z "$1" ]
 fi
 
 app_name=$1
-parent_dir="$(dirname "$dir")"
 
 export app_name
 export app_dir=$(dirname $(pwd))/$app_name
@@ -19,18 +18,17 @@ mkdir $app_dir
 cp -R . $app_dir
 
 echo "Creating bin files"
-echo "ansible-playbook --inventory-file=provisioning/inventories/staging --user root --ask-pass --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/bootstrap.yml" > $app_dir/provisioning/bin/bootstrap-staging
-echo "ansible-playbook --inventory-file=provisioning/inventories/staging --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml" > $app_dir/provisioning/bin/provision-staging
-echo "ansible-playbook --inventory-file=provisioning/inventories/staging --user deploy --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/deploy.yml" > $app_dir/provisioning/bin/deploy-staging
-chmod 755 $app_dir/provisioning/bin/bootstrap-staging
-chmod 755 $app_dir/provisioning/bin/provision-staging
-chmod 755 $app_dir/provisioning/bin/deploy-staging
-echo "ansible-playbook --inventory-file=provisioning/inventories/production --user root --ask-pass --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/bootstrap.yml" > $app_dir/provisioning/bin/bootstrap-production
-echo "ansible-playbook --inventory-file=provisioning/inventories/production --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml" > $app_dir/provisioning/bin/provision-production
-echo "ansible-playbook --inventory-file=provisioning/inventories/production --user deploy --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/deploy.yml" > $app_dir/provisioning/bin/deploy-production
-chmod 755 $app_dir/provisioning/bin/bootstrap-production
-chmod 755 $app_dir/provisioning/bin/provision-production
-chmod 755 $app_dir/provisioning/bin/deploy-production
+echo "ansible-playbook --inventory-file=provisioning/inventories/\$app_name --user root --ask-pass --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/bootstrap.yml" > $app_dir/provisioning/bin/bootstrap
+echo "ansible-playbook --inventory-file=provisioning/inventories/\$app_name --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml" > $app_dir/provisioning/bin/configure
+echo "ansible-playbook --inventory-file=provisioning/inventories/\$app_name --user deploy --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/deploy.yml" > $app_dir/provisioning/bin/deploy
+chmod 755 $app_dir/provisioning/bin/bootstrap
+chmod 755 $app_dir/provisioning/bin/configure
+chmod 755 $app_dir/provisioning/bin/deploy
+
+echo "Generating Vagrantfile"
+touch $app_dir/Vagrantfile
+sed "s/__APP_NAME__/$app_name/g" $app_dir/Vagrantfile.template > $app_dir/Vagrantfile
+rm $app_dir/Vagrantfile.template
 
 echo "Cleaning up files"
 rm -rf $app_dir/.git
@@ -46,9 +44,7 @@ echo "   vim $app_dir/provisioning\n\n"
 
 echo "2. Create and provision your VM"
 echo "   cd $app_dir && \\"
-echo "   vagrant up development --provider virtualbox --provision\n\n"
-
-echo "When provisioning is complete, your Rails app should be running on the guest/VM at http://localhost:3000/"
+echo "   vagrant up development --provider virtualbox --provision"
 echo "#################################################################################\n\n"
 
 exit 0

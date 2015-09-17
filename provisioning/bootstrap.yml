@@ -4,14 +4,6 @@
     - group_vars/staging
 
   tasks:
-  #
-  # TODO: Should we just keep password generaed by Rackspace? Discuss this with Sean KP.
-  #
-  #- name: Change root password
-    #user:
-      #name=root
-      #password={{ root_password }}
-
   - name: Add deploy user
     user:
       name={{ username }}
