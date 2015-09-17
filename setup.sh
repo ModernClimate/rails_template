@@ -18,14 +18,16 @@ mkdir $app_dir
 cp -R . $app_dir
 
 echo "Creating bin files"
-echo "ansible-playbook --inventory-file=provisioning/inventories/\$app_name --user root --ask-pass --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/bootstrap.yml" > $app_dir/provisioning/bin/bootstrap
-echo "ansible-playbook --inventory-file=provisioning/inventories/\$app_name --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml" > $app_dir/provisioning/bin/configure
-echo "ansible-playbook --inventory-file=provisioning/inventories/\$app_name --user deploy --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/deploy.yml" > $app_dir/provisioning/bin/deploy
-chmod 755 $app_dir/provisioning/bin/bootstrap
-chmod 755 $app_dir/provisioning/bin/configure
-chmod 755 $app_dir/provisioning/bin/deploy
+bin_files=( bootstrap configure deploy )
+for file in "${bin_files[@]}"
+do
+  touch $app_dir/provisioning/bin/$file
+  sed "s/__APP_NAME__/$app_name/g" $app_dir/provisioning/bin/$file.template > $app_dir/provisioning/bin/$file
+  chmod 755 $app_dir/provisioning/bin/$file
+  rm $app_dir/provisioning/bin/$file.template
+done
 
-echo "Generating Vagrantfile"
+echo "Creating Vagrantfile"
 touch $app_dir/Vagrantfile
 sed "s/__APP_NAME__/$app_name/g" $app_dir/Vagrantfile.template > $app_dir/Vagrantfile
 rm $app_dir/Vagrantfile.template
