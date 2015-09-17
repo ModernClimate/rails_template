@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: webservers
   tasks:
     - set_fact: this_release_ts={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
     - set_fact: this_release_path={{ releases_path }}/{{ this_release_ts }}
