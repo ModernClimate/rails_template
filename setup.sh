@@ -36,6 +36,9 @@ echo "Cleaning up files"
 rm -rf $app_dir/.git
 rm -rf $app_dir/setup.sh
 
+echo "Install Ansible dependencies"
+cd $app_dir/provisioning/roles && ansible-galaxy install -r requirements.yml --force
+
 echo "Setup complete"
 echo "#################################################################################\n"
 
