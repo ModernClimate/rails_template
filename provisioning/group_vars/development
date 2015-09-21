@@ -3,11 +3,9 @@ username: vagrant
 password: vagrant
 user_home: /home/vagrant
 
-ssh:
-  port: 22
-
-web:
-  port: 3000
+ufw_tcp_ports:
+  - 22
+  - 3000
 
 ruby:
   version: 2.2.0
@@ -53,7 +51,7 @@ nodejs:
 
 nginx_sites:
   rails:
-    - listen {{ web.port }}
+    - listen 3000
     - server_name localhost
     - location / { try_files $uri @proxy; }
     - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://{{ app_name }}; }

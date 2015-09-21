@@ -1,11 +1,11 @@
 ---
 - hosts: all
   roles:
-    - internal/common
+    - external/ackmann-dickenson.common
 
 - hosts: webservers
   roles:
-    - internal/web
+    - external/jdauphant.nginx
     - internal/ruby
     - internal/rails
 

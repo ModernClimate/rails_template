@@ -1,3 +1,2 @@
 ---
-- include: ruby-essentials.yml
-- include: ruby.yml
+- include: install.yml

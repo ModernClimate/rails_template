@@ -1,4 +1,0 @@
----
-- name: Allow http
-  sudo: yes
-  ufw: rule=allow port={{ web.port }}
