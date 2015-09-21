@@ -1,0 +1,9 @@
+---
+- name: Set firewall default policy
+  sudo: yes
+  ufw: state=enabled policy=reject
+
+- name: Allow ssh
+  sudo: yes
+  ufw: rule=allow port={{ ssh.port }}
+

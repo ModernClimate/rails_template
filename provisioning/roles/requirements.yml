@@ -6,3 +6,7 @@
 - src: ANXS.postgresql
   version: "v1.2.1"
   path : external
+
+- src: jdauphant.nginx
+  version: "v1.7.1"
+  path : external

@@ -51,6 +51,13 @@ postgresql_users:
 nodejs:
   path: /usr/bin/nodejs
 
-virtual_hosts:
-  - server_name: "{{ rails.app_name }}.dev"
-    root: "/home/vagrant/{{ rails.app_name }}"
+nginx_sites:
+  rails:
+    - listen {{ web.port }}
+    - server_name localhost
+    - location / { try_files $uri @proxy; }
+    - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://{{ app_name }}; }
+    - root {{ rails.path }}
+nginx_configs:
+  upstream:
+      - upstream {{ app_name }} { server 127.0.0.1:3000; }

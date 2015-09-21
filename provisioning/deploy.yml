@@ -61,8 +61,8 @@
     - name: Symlink new release
       file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes
 
-    - name: Restart nginx
-      command: sudo service nginx restart
+    #- name: Restart nginx
+      #command: sudo service nginx restart
 
     - name: Cleanup
       shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"

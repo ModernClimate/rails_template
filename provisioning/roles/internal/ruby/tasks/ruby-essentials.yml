@@ -7,6 +7,7 @@
   sudo: true
   apt: name={{ item.package }}
   with_items:
+    - package: nodejs
     - package: imagemagick
     - package: libmagickwand-dev
     - package: libmagickcore-dev

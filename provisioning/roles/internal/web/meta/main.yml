@@ -1,4 +1,5 @@
 ---
 dependencies:
   - { role: internal/common }
+  - { role: external/jdauphant.nginx }
 
