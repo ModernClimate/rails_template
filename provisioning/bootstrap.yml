@@ -1,7 +1,9 @@
 ---
 - hosts: all
-  vars_files:
-    - group_vars/staging
+
+  handlers:
+  - name: restart sshd
+    command: service ssh restart
 
   tasks:
   - name: Add deploy user
@@ -17,12 +19,12 @@
 
   - name: Add deploy user to sudoers
     lineinfile:
-      "dest=/etc/sudoers
-      regexp='^{{ username }} ALL'
-      line='{{ username }} ALL=(ALL) NOPASSWD: ALL'
-      state=present"
+      dest=/etc/sudoers
+      regexp="^{{ username }} ALL"
+      line="{{ username }} ALL=(ALL) NOPASSWD: ALL"
+      state=present
 
-  - name: Disallow root SSH access
+  - name: Disable root SSH access
     lineinfile:
       dest=/etc/ssh/sshd_config
       regexp="^PermitRootLogin"
@@ -31,7 +33,7 @@
     notify:
       - restart sshd
 
-  - name: Disallow SSH password authentication
+  - name: Disable SSH password authentication
     lineinfile:
       dest=/etc/ssh/sshd_config
       regexp="^PasswordAuthentication"
@@ -40,7 +42,7 @@
     notify:
       - restart sshd
 
-  - name: Disallow SSH GSS API authentication
+  - name: Disable SSH GSS API authentication
     lineinfile:
       dest=/etc/ssh/sshd_config
       regexp="^GSSAPIAuthentication"
@@ -48,8 +50,4 @@
       state=present
     notify:
       - restart sshd
-
-  handlers:
-  - name: restart sshd
-    command: service ssh restart
 

@@ -10,3 +10,10 @@
 - src: jdauphant.nginx
   version: "v1.7.1"
   path : external
+
+- src: git@github.com:ackmann-dickenson/ansible_common.git
+  scm: git
+  version: master
+  path : external
+  name: ackmann-dickenson.common
+
