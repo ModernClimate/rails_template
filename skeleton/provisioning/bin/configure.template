@@ -5,6 +5,5 @@ if [ -z "$1" ]
 fi
 
 inventory=$1
-app_name=__APP_NAME__
 
-ansible-playbook --inventory-file=provisioning/inventories/\$inventory --user deploy --sudo --ask-vault-pass --extra-vars '{\"app_name\":\"$app_name\"}' -vvvv provisioning/site.yml
+ansible-playbook --inventory-file=provisioning/inventories/$inventory --user deploy --sudo --ask-vault-pass --extra-vars '{"app_name":"__APP_NAME__"}' -vvvv provisioning/site.yml
