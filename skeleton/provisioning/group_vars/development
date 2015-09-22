@@ -54,7 +54,7 @@ nginx_sites:
     - server_name localhost
     - root {{ rails.path }}
     - location / { try_files /maintenance.html $uri @proxy; }
-    - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://{{ app_name }}; }
+    - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://rails; }
     - location @maintenance { rewrite ^(.*)$ /maintenance.html break; }
     - error_page 503 @maintenance
 nginx_configs:
