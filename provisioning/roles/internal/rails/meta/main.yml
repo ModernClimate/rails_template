@@ -1,5 +1,0 @@
----
-dependencies:
-  - { role: internal/common }
-  - { role: internal/ruby }
-

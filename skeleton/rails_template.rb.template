@@ -1,4 +1,4 @@
-app_name = '{{ rails.app_name }}'
+app_name = "__APP_NAME__"
 
 #
 # Gems
@@ -8,6 +8,7 @@ remove_file "Gemfile"
 run "touch Gemfile"
 
 add_source 'https://rubygems.org'
+gem "puma"
 gem "devise"
 gem 'rails', '4.2.4'
 gem 'sass-rails', '~> 5.0'
@@ -56,23 +57,30 @@ CODE
 
 remove_file "config/database.yml"
 file "config/database.yml", <<-CODE
-{% for db in rails.databases %}  
-{{ db.env }}:
+development:
   adapter: postgresql
   encoding: unicode
   host: localhost
   pool: 50
-  database: {{ db.database }}
-  username: {{ db.username }}
-  password: {{ db.password }}
-{% endfor %}
+  database: #{app_name}_development
+  username: vagrant
+  password: vagrant
+
+test:
+  adapter: postgresql
+  encoding: unicode
+  host: localhost
+  pool: 50
+  database: #{app_name}_test
+  username: vagrant
+  password: vagrant
 CODE
 
 file "config/database.yml.travis", <<-CODE
 test:
   adapter: postgresql
   encoding: unicode
-  database: {{ app_name }}_test
+  database: #{app_name}_test
   username: postgres
 CODE
 
@@ -83,15 +91,15 @@ CODE
 
 file ".travis.yml", <<-CODE
 language: ruby
-rvm: "{{ ruby.version }}"
+rvm: "2.2"
 addons:
-  postgresql: "{{ postgresql_version }}"
+  postgresql: "9.3"
 before_install:
   - cp config/database.yml.travis config/database.yml
 install:
   - bundle install --path vendor/bundle
 before_script:
-  - psql -c 'create database {{ app_name }}_test;' -U postgres
+  - psql -c 'create database #{app_name}_test;' -U postgres
   - RAILS_ENV=test bundle exec rake db:migrate --trace
   - bundle exec rake db:test:prepare
 CODE
@@ -101,10 +109,9 @@ CODE
 # Git
 #
 
-file ".gitignore", <<-CODE
-.vagrant/**/*
-config/database.yml
-config/secrets.yml
-provisioning/roles/external/**/*
-CODE
+#[".vagrant/**/*", "config/database.yml", "config/secrets.yml", "provisioning/roles/external/**/*"].each do |f|
+#  inject_into_file ".gitignore" do
+#    "\n#{f}"
+#  end
+#end
 

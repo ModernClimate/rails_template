@@ -1,0 +1,32 @@
+# Bootstrapping a New Rails App
+
+### Host Machine Requirements
+
+- **Ansible**
+  - `brew install ansible`
+  - *Last tested on version 1.9.2*
+- **VirtualBox**
+  - [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
+  - *Last tested on version 5.0.2*
+- **Vagrant**
+  - [http://www.vagrantup.com/downloads](http://www.vagrantup.com/downloads)
+  - *Last tested on version 1.7.4*
+- **Vagrant VirtualBox Guest Additions Plugin**
+  - `vagrant plugin install vagrant-vbguest`
+  - *Last tested on version 0.10.0*
+
+### Provisioning Staging and Production Environments
+1. Create server through Rackspace UI
+  - https://mycloud.rackspace.com (see Sean Kelley-Pegg for credentials)
+2. Configure Ansible inventories
+  ```
+vim your_snake_case_project_name/provisioning/inventories/staging
+vim your_snake_case_project_name/provisioning/inventories/production
+  ```
+3. Bootstrap, provision, and deploy to the staging server
+  ```
+cd your_snake_case_project_name/
+./provisioning/bin/bootstrap-staging
+./provisioning/bin/provision-staging
+./provisioning/bin/deploy-staging
+  ```

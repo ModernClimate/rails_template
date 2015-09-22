@@ -5,11 +5,10 @@ user_home: /home/vagrant
 
 ufw_tcp_ports:
   - 22
-  - 3000
+  - 3001
 
-ruby:
-  version: 2.2.0
-  path: /opt/rubies/ruby-2.2.0
+#ruby_user_home_path: {{ user_home }}
+ruby_version: 2.2.3
 
 rails:
   app_name: "{{ app_name }}"
@@ -51,7 +50,7 @@ nodejs:
 
 nginx_sites:
   rails:
-    - listen 3000
+    - listen 3001
     - server_name localhost
     - location / { try_files $uri @proxy; }
     - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://{{ app_name }}; }

@@ -14,8 +14,15 @@ export app_dir=$(dirname $(pwd))/$app_name
 echo "\n\n#################################################################################"
 echo "Initializing app:           $app_name"
 echo "Creating project directory: $app_dir"
+
+if [ -d $app_dir ]
+  then
+    echo "\n\nError: Project directory $app_dir already exists\n"
+    exit 1
+fi
+
 mkdir $app_dir
-cp -R . $app_dir
+cp -R ./skeleton/* $app_dir
 
 echo "Creating bin files"
 bin_files=( bootstrap configure deploy )
@@ -31,6 +38,16 @@ echo "Creating Vagrantfile"
 touch $app_dir/Vagrantfile
 sed "s/__APP_NAME__/$app_name/g" $app_dir/Vagrantfile.template > $app_dir/Vagrantfile
 rm $app_dir/Vagrantfile.template
+
+echo "Creating Rails template file"
+touch $app_dir/rails_template.rb
+sed "s/__APP_NAME__/$app_name/g" $app_dir/rails_template.rb.template > $app_dir/rails_template.rb
+rm $app_dir/rails_template.rb.template
+
+echo "Creating README.md"
+touch $app_dir/README.md
+sed "s/__APP_NAME__/$app_name/g" $app_dir/README.md.template > $app_dir/README.md
+rm $app_dir/README.md.template
 
 echo "Cleaning up files"
 rm -rf $app_dir/.git

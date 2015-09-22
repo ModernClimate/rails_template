@@ -6,11 +6,10 @@
 - hosts: webservers
   roles:
     - external/jdauphant.nginx
-    - internal/ruby
+    - external/ackmann-dickenson.ruby
     - internal/rails
 
 - hosts: databases
   roles:
     - external/ANXS.postgresql
     - external/DavidWittman.redis
-

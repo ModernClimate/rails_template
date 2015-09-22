@@ -1,13 +1,10 @@
-#[localhost]
-#localhost ansible_connection=local
-
 [webservers]
 # Add your hosts here
 
 [databases]
 # Add your hosts here
 
-[production:children]
+[staging:children]
 webservers
 databases
 

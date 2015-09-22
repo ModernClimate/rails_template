@@ -35,6 +35,7 @@
       with_items:
         - config/database.yml
         - config/secrets.yml
+        - config/puma.yml
 
     - name: Symlink shared files
       file: src={{ shared_path }}/{{ item }} dest={{ this_release_path }}/{{ item }} state=link force=yes
@@ -44,17 +45,17 @@
         - vendor/bundle
 
     - name: Install gems
-      command: '{{ ruby.path }}/bin/bundle install --deployment --without="development test"'
+      command: '{{ ruby_path }}/bin/bundle install --deployment --without="development test"'
       args:
         chdir: '{{ this_release_path }}'
 
     - name: Precompile assets
-      command: "{{ ruby.path }}/bin/rake assets:precompile chdir={{ this_release_path }}"
+      command: "{{ ruby_path }}/bin/rake assets:precompile chdir={{ this_release_path }}"
       environment:
         RAILS_ENV: '{{ rails.env }}'
 
     - name: Migrate database
-      command: "{{ ruby.path }}/bin/rake db:migrate chdir={{ this_release_path }}"
+      command: "{{ ruby_path }}/bin/rake db:migrate chdir={{ this_release_path }}"
       environment:
         RAILS_ENV: '{{ rails.env }}'
 
