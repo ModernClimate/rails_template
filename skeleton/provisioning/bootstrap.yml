@@ -19,10 +19,10 @@
 
   - name: Add deploy user to sudoers
     lineinfile:
-      dest=/etc/sudoers
-      regexp="^{{ username }} ALL"
-      line="{{ username }} ALL=(ALL) NOPASSWD: ALL"
-      state=present
+      "dest=/etc/sudoers
+      regexp='^{{ username }} ALL'
+      line='{{ username }} ALL=(ALL) NOPASSWD: ALL'
+      state=present"
 
   - name: Disable root SSH access
     lineinfile:
