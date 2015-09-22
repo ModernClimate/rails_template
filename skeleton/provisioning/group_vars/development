@@ -7,7 +7,7 @@ ufw_tcp_ports:
   - 22
   - 3001
 
-#ruby_user_home_path: {{ user_home }}
+#ruby_user_home_path: "{{ user_home }}"
 ruby_version: 2.2.3
 
 rails:
@@ -52,9 +52,11 @@ nginx_sites:
   rails:
     - listen 3001
     - server_name localhost
-    - location / { try_files $uri @proxy; }
-    - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://{{ app_name }}; }
     - root {{ rails.path }}
+    - location / { try_files /maintenance.html $uri @proxy; }
+    - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://{{ app_name }}; }
+    - location @maintenance { rewrite ^(.*)$ /maintenance.html break; }
+    - error_page 503 @maintenance
 nginx_configs:
   upstream:
-      - upstream {{ app_name }} { server 127.0.0.1:3000; }
+      - upstream rails { server 127.0.0.1:3000; }

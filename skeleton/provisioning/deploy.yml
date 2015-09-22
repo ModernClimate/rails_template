@@ -6,6 +6,12 @@
 
     - debug: msg='New release path {{ this_release_path }}'
 
+    - name: display maintenance page
+      file:
+        src: "roles/internal/deploy/files/maintenance.html"
+        dest: "{{ current_release_path }}/maintenance.html"
+        force: yes
+
     - name: Create new release dir
       file: path={{ this_release_path }} state=directory
 
@@ -21,28 +27,27 @@
     - name: Create shared sub-dirs
       file: path={{ shared_path }}/{{ item }} state=directory
       with_items:
-        - config
         - log
-        - tmp
-        - vendor
-        - vendor/bundle
 
     - name: Create config files
       template:
-        src: "roles/internal/rails/templates/{{ item }}.j2"
+        src: "roles/internal/deploy/templates/{{ item }}.j2"
         dest: "{{ this_release_path }}/{{ item }}"
         force: yes
       with_items:
         - config/database.yml
         - config/secrets.yml
-        - config/puma.yml
+        - config/puma.rb
 
     - name: Symlink shared files
-      file: src={{ shared_path }}/{{ item }} dest={{ this_release_path }}/{{ item }} state=link force=yes
+      file:
+        src: "{{ shared_path }}/{{ item }}"
+        dest: "{{ this_release_path }}/{{ item }}"
+        state: link
+        force: yes
       with_items:
-        - log
-        - tmp
-        - vendor/bundle
+        - log/{{ rails.env }}.log
+        - log/sidekiq.log
 
     - name: Install gems
       command: '{{ ruby_path }}/bin/bundle install --deployment --without="development test"'
@@ -58,6 +63,9 @@
       command: "{{ ruby_path }}/bin/rake db:migrate chdir={{ this_release_path }}"
       environment:
         RAILS_ENV: '{{ rails.env }}'
+
+    - name: remove maintenance page
+      file: path={{ current_release_path }}/maintenance.html state=absent
 
     - name: Symlink new release
       file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes
