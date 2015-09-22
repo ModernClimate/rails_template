@@ -6,11 +6,15 @@
 
     - debug: msg='New release path {{ this_release_path }}'
 
+    - stat: path={{ current_release_path }}
+      register: current_dir
+
     - name: display maintenance page
-      file:
-        src: "roles/internal/deploy/files/maintenance.html"
+      copy:
+        src: roles/internal/deploy/files/maintenance.html
         dest: "{{ current_release_path }}/maintenance.html"
         force: yes
+      when: current_dir.stat.exists == True
 
     - name: Create new release dir
       file: path={{ this_release_path }} state=directory
@@ -69,9 +73,6 @@
 
     - name: Symlink new release
       file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes
-
-    #- name: Restart nginx
-      #command: sudo service nginx restart
 
     - name: Cleanup
       shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"
