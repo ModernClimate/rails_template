@@ -60,12 +60,12 @@ First, you'll need to create the remove server(s). The project is currently *not
 
 After the new server is created and available, add the server's IP address to the appropriate Ansible inventory file:
 ```
-vim your_snake_case_project_name/provisioning/inventories/staging
+cd your_snake_case_project_name
+vim ./provisioning/inventories/staging
 ```
 
 Next, run the `provisioning/bin/bootstrap` shell script to bootstrap the server, passing the script the name of the inventory you're bootstrapping:
 ```
-cd your_snake_case_project_name
 ./provisioning/bin/bootstrap staging
 ```
 
