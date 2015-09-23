@@ -52,7 +52,7 @@ nginx_sites:
   rails:
     - listen 3001
     - server_name localhost
-    - root {{ rails.path }}
+    - root {{ rails.path }}/current
     - location / { try_files /maintenance.html $uri @proxy; }
     - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://rails; }
     - location @maintenance { rewrite ^(.*)$ /maintenance.html break; }

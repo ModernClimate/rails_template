@@ -1,13 +1,19 @@
 ---
 - hosts: webservers
+
+  roles:
+    - internal/deploy
+
   tasks:
     - set_fact: this_release_ts={{ lookup('pipe', 'date +%Y%m%d%H%M%S') }}
     - set_fact: this_release_path={{ releases_path }}/{{ this_release_ts }}
 
-    - debug: msg='New release path {{ this_release_path }}'
-
     - stat: path={{ current_release_path }}
       register: current_dir
+
+    - debug: msg="New release path {{ this_release_path }}"
+
+    - debug: msg="current_dir exists? {{ current_dir.stat.exists }}"
 
     - name: display maintenance page
       copy:
@@ -16,24 +22,30 @@
         force: yes
       when: current_dir.stat.exists == True
 
-    - name: Create new release dir
+    - name: stop puma
+      sudo: true
+      service: name=puma state=stopped args="app={{ current_release_path }}"
+
+    - name: create new release dir
       file: path={{ this_release_path }} state=directory
 
-    - name: Update code
+    - name: update code
       git: repo={{ git_url }} dest={{ this_release_path }} version={{ git_version }} accept_hostkey=yes
       register: git
 
     - debug: msg='Updated repo from {{ git.before }} to {{ git.after }}'
 
-    - name: Create shared dir
+    - name: create shared dir
       file: path={{ shared_path }} state=directory
 
-    - name: Create shared sub-dirs
+    - name: create shared sub-dirs
       file: path={{ shared_path }}/{{ item }} state=directory
       with_items:
         - log
+        - tmp
+        - tmp/pids
 
-    - name: Create config files
+    - name: create config files
       template:
         src: "roles/internal/deploy/templates/{{ item }}.j2"
         dest: "{{ this_release_path }}/{{ item }}"
@@ -43,38 +55,42 @@
         - config/secrets.yml
         - config/puma.rb
 
-    - name: Symlink shared files
+    - name: symlink shared files
       file:
         src: "{{ shared_path }}/{{ item }}"
         dest: "{{ this_release_path }}/{{ item }}"
         state: link
         force: yes
       with_items:
-        - log/{{ rails.env }}.log
+        - log/{{ rails_env }}.log
         - log/sidekiq.log
 
-    - name: Install gems
+    - name: install gems
       command: '{{ ruby_path }}/bin/bundle install --deployment --without="development test"'
       args:
         chdir: '{{ this_release_path }}'
 
-    - name: Precompile assets
+    - name: precompile assets
       command: "{{ ruby_path }}/bin/rake assets:precompile chdir={{ this_release_path }}"
       environment:
-        RAILS_ENV: '{{ rails.env }}'
+        RAILS_ENV: '{{ rails_env }}'
 
-    - name: Migrate database
+    - name: migrate database
       command: "{{ ruby_path }}/bin/rake db:migrate chdir={{ this_release_path }}"
       environment:
-        RAILS_ENV: '{{ rails.env }}'
+        RAILS_ENV: '{{ rails_env }}'
 
     - name: remove maintenance page
-      file: path={{ current_release_path }}/maintenance.html state=absent
+      file: path={{ current_release_path }}/maintenance.html state=absent force=true
 
-    - name: Symlink new release
+    - name: symlink new release
       file: src={{ this_release_path }} dest={{ current_release_path }} state=link force=yes
 
-    - name: Cleanup
+    - name: start puma
+      sudo: true
+      service: name=puma state=started args="app={{ current_release_path }}"
+
+    - name: cleanup
       shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"
       args:
         chdir: '{{ releases_path }}'

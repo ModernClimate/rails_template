@@ -1,0 +1,49 @@
+---
+username: deploy
+user_home: /home/{{ username }}
+
+ufw_tcp_ports:
+  - 22
+  - 80
+
+ruby_version: 2.2.3
+ruby_path: /opt/rubies/ruby-{{ ruby_version }}
+ruby_user_home_path: "{{ user_home }}"
+
+rails_app_name: "{{ app_name }}"
+rails_path: "/var/www/{{ app_name }}"
+
+postgresql_version: 9.3
+postgresql_encoding: 'UTF-8'
+postgresql_locale: 'en_US.UTF-8'
+postgresql_admin_user: "postgres"
+postgresql_default_auth_method: "trust"
+postgresql_cluster_name: "main"
+postgresql_cluster_reset: false
+
+nodejs:
+  path: /usr/bin/nodejs
+
+git_url: git@github.com:ackmann-dickenson/{{ app_name }}.git
+git_version: master
+shared_path: '{{ rails_path }}/shared'
+releases_path: '{{ rails_path }}/releases'
+current_release_path: '{{ rails_path }}/current'
+app_public_path: "{{ current_release_path }}/public"
+app_config_path: "{{ current_release_path }}/config"
+app_temp_path: "{{ current_release_path }}/tmp"
+app_logs_path: "{{ current_release_path }}/log"
+keep_releases: 5
+
+nginx_sites:
+  rails:
+    - listen 80
+    - server_name {{ app_name }}.staging
+    - root {{ current_release_path }}
+    - location / { try_files /maintenance.html $uri @proxy; }
+    - location @proxy { include proxy_params; proxy_redirect off; proxy_pass http://rails; }
+    - location @maintenance { rewrite ^(.*)$ /maintenance.html break; }
+    - error_page 503 @maintenance
+nginx_configs:
+  upstream:
+      - upstream rails { server 127.0.0.1:9292; }

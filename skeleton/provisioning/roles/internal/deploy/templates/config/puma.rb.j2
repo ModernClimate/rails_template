@@ -1,0 +1,6 @@
+# See https://github.com/puma/puma/blob/master/examples/config.rb for more options
+bind 'tcp://127.0.0.1:9292'
+environment '{{ rails_env }}'
+pidfile "{{ rails_path }}/shared/tmp/puma/pid"
+state_path "{{ rails_path }}/shared/tmp/puma/state"
+activate_control_app

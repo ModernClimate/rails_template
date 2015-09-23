@@ -1,0 +1,4 @@
+---
+- name: add puma upstart runner
+  sudo: true
+  template: src=roles/internal/deploy/templates/puma/etc_init_puma.conf.j2 dest=/etc/init/puma.conf force=yes mode=755

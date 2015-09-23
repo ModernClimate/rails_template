@@ -7,7 +7,7 @@
     - package: libpq-dev
 
 - name: initialize rails directory
-  file: path={{ rails.path }} state=directory owner={{ username }} group={{ username }}
+  file: path={{ rails_path }} state=directory owner={{ username }} group={{ username }}
 
 - name: install rails
   command: "{{ ruby_path }}/bin/gem install rails --no-document"
