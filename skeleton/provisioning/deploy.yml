@@ -43,7 +43,7 @@
       with_items:
         - log
         - tmp
-        - tmp/pids
+        - tmp/puma
 
     - name: create config files
       template:
