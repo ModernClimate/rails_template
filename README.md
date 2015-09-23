@@ -17,10 +17,10 @@
 
 ### New Project Setup
 
-Clone the A&D [Rails template](https://github.com/ackmann-dickenson/ansible_rails) repo, if you haven't already done so, and pull down latest changes:
+Clone the A&D [Rails template](https://github.com/ackmann-dickenson/rails_template) repo, if you haven't already done so, and pull down latest changes:
 ```
-git clone git@github.com:ackmann-dickenson/ansible_rails.git
-cd ansible_rails
+git clone git@github.com:ackmann-dickenson/rails_template.git
+cd rails_template
 git pull
 ```
 Generate the new project skeleton:
