@@ -22,9 +22,15 @@
         force: yes
       when: current_dir.stat.exists == True
 
+    - name: stop sidekiq
+      sudo: true
+      service: name=sidekiq-workers state=stopped
+      when: current_dir.stat.exists == True
+
     - name: stop puma
       sudo: true
       service: name=puma state=stopped args="app={{ current_release_path }}"
+      when: current_dir.stat.exists == True
 
     - name: create new release dir
       file: path={{ this_release_path }} state=directory
@@ -89,6 +95,10 @@
     - name: start puma
       sudo: true
       service: name=puma state=started args="app={{ current_release_path }}"
+
+    - name: start sidekiq
+      sudo: true
+      service: name=sidekiq-workers state=started
 
     - name: cleanup
       shell: "ls -1t {{ releases_path }}|tail -n +{{ keep_releases + 1 }}|xargs rm -rf"

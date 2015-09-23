@@ -2,3 +2,11 @@
 - name: add puma upstart runner
   sudo: true
   template: src=roles/internal/deploy/templates/puma/etc_init_puma.conf.j2 dest=/etc/init/puma.conf force=yes mode=755
+
+- name: add sidekiq upstart runner
+  sudo: true
+  template: src=roles/internal/deploy/templates/sidekiq/etc_init_sidekiq.conf.j2 dest=/etc/init/sidekiq.conf force=yes mode=755
+
+- name: add sidekiq workers upstart runner
+  sudo: true
+  template: src=roles/internal/deploy/templates/sidekiq/etc_init_sidekiq-workers.conf.j2 dest=/etc/init/sidekiq-workers.conf force=yes mode=755

@@ -24,6 +24,8 @@ rails:
       username: vagrant
       password: vagrant
 
+sidekiq_num_workers: 2
+
 postgresql_version: 9.3
 postgresql_encoding: 'UTF-8'
 postgresql_locale: 'en_US.UTF-8'
