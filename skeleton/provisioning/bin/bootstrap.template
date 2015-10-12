@@ -1,9 +1,0 @@
-if [ -z "$1" ]
-  then
-    echo "Please specify an inventory/environment"
-    exit 1
-fi
-
-inventory=$1
-
-ansible-playbook --inventory-file=provisioning/inventories/$inventory --user root --ask-pass --ask-vault-pass --extra-vars '{"app_name":"__APP_NAME__"}' -vvvv provisioning/bootstrap.yml

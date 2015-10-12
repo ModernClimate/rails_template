@@ -14,24 +14,57 @@
 - **Vagrant VirtualBox Guest Additions Plugin**
   - `vagrant plugin install vagrant-vbguest`
   - *Last tested on version 0.10.0*
-- *A&D Repositories*
+- **A&D Repositories**
   - you must have access to the following A&D Repositories:
     * https://github.com/ackmann-dickenson/ansible_ruby
     * https://github.com/ackmann-dickenson/ansible_common
 
 
-### New Project Setup
+
+### Installation
 
 Clone the A&D [Rails template](https://github.com/ackmann-dickenson/rails_template) repo, if you haven't already done so, and pull down latest changes:
 ```
 git clone git@github.com:ackmann-dickenson/rails_template.git
 cd rails_template
 git pull
+rake build
+rake install
+cd ..
+rm -rf rails_template
 ```
+
+You can now use `rails_template` to create a new rails project:
+```
+rails_template new NAME [OPTIONS]
+```
+
+* `NAME` - the snake-cased project name, e.g. `some_cool_new_client_app`
+* `--dest=DIR` (or `-d DIR` ) - the destination folder where the new project will be built
+
+General help is available:
+
+```
+rails_template
+```
+
+or
+
+```
+rails_template help
+```
+
+
+### Create a new project
+
 Generate the new project skeleton:
 ```
-./setup.sh your_snake_case_project_name
+rails_template new your_snake_case_project_name
 ```
+
+
+
+### New Project Setup
 
 Configure Ansible as needed in `your_snake_case_project_name/provisioning` and provision development VM:
 ```
