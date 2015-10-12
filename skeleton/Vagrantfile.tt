@@ -1,6 +1,36 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+IP_ADDRESS = ENV['<%= @app_abbr %>_IP_ADDRESS'] || "33.33.33.33"
+
+# File on the host machine that maps IP addresses to host names
+HOSTSFILE   = ENV['<%= @app_abbr %>_HOSTSFILE'] || "/etc/hosts"
+
+# If you add "192.168.30.30	<%= @app_name %>.local" to your /etc/hosts file, you can then use
+# "http://<%= @app_name %>.local:3001" to access the application. This
+# makes it easier to run more than one VM without having to worry
+# about colliding host ports.
+HOSTNAME   = ENV['<%= @app_abbr %>_HOST_NAME'] || '<%= @app_name %>.local'
+
+# If you want to override the host port that maps to the VM port 3001.
+HOSTPORT   = ENV['<%= @app_abbr %>_HOST_PORT'] || 3001
+
+# You can set envars to make the VM use more or less memory, number of
+# cores, and video ram. This is usually when you have to or need to
+# boost performance.
+
+VM_MEMORY  = ENV['<%= @app_abbr %>_VM_MEMORY']   || "1024"
+VM_CPUS    = ENV['<%= @app_abbr %>_VM_CPUS']     || "1"
+VM_VRAM    = ENV['<%= @app_abbr %>_VM_VRAM']     || "8"
+
+def get_ip_address
+  require "resolv"
+  resolver = Resolv::Hosts.new(HOSTSFILE)
+  resolver.getaddress(HOSTNAME)
+rescue
+  IP_ADDRESS
+end
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
@@ -15,11 +45,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     dev.vm.synced_folder ".", "/home/vagrant/<%= @app_name %>"
 
     dev.vm.box = "ubuntu/trusty64"
-    dev.vm.network :private_network, ip: "33.33.33.33"
-    dev.vm.network "forwarded_port", guest: 3001, host: 3001
+    dev.vm.network :private_network, ip: get_ip_address
+    dev.vm.network "forwarded_port", guest: 3001, host: HOSTPORT
 
+    # See the VboxManage command help to see all the parameters you
+    # can set in VirtualBox.
     dev.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--memory", VM_MEMORY]
+      vb.customize ["modifyvm", :id, "--cpus",   VM_CPUS]
+      vb.customize ["modifyvm", :id, "--vram",   VM_VRAM]
     end
 
     dev.vm.provision :ansible do |ansible|

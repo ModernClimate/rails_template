@@ -1,8 +1,6 @@
 # <%= @app_name %>
 
-## Bootstrapping a New Rails App
-
-### Host Machine Requirements
+## Host Machine Requirements
 
 - **Ansible**
   - `brew install ansible`
@@ -22,8 +20,7 @@
     * https://github.com/ackmann-dickenson/ansible_common
 
 
-
-### Provisioning Staging and Production Environments
+## Provisioning Staging and Production Environments
 1. Create server through Rackspace UI
   - https://mycloud.rackspace.com (see Sean Kelley-Pegg for credentials)
 2. Configure Ansible inventories
@@ -41,3 +38,125 @@ cd path/to/<%= @app_name %>/
 ./provisioning/bin/provision-staging
 ./provisioning/bin/deploy-staging
 ```
+
+## Bringing up an application development VM
+
+While a good perusal of the Vagrant and Ansible documentation will
+certainly help, the development VM should be able to be brought up and
+provisioned the first time with:
+
+``` bash
+$ vagrant up
+```
+
+Subsequent calls to `vagrant up` will bring up the VM, but no
+provisioning will be run.
+
+You connect to the VM via:
+
+``` bash
+$ vagrant ssh
+```
+
+You can halt the VM via:
+
+``` bash
+$ vagrant halt
+```
+
+## Customizing your Vagrant VM
+
+In general, on this project you should not need to customize the
+`Vagrantfile` but there is still a provision to do so. Sometimes you
+may want quite a bit more RAM or CPU horsepower to compile something
+or have more processes running at once, etc.
+
+The Vagrantfile contains some references to shell environment
+variables that you can set to customize the virtual machine.
+
+### VM Parameters
+
+* `<%= @app_abbr %>_VM_MEMORY` - amount of RAM to assign to the VM. It defaults to
+  1024, but you can bump this up as much as your machine can handle.
+
+* `<%= @app_abbr %>_VM_CPUS` - the number of cores to assign to the VM. The default
+  is 1, but if you have a multicore machine, it's helpful to give the
+  VM a couple of cores.
+
+* `<%= @app_abbr %>_VM_VRAM` - amount of video RAM to give the VM. The default is 8,
+  but if want to do any video work, and if you use xfvb, you might
+  need up to 12 or more.
+
+### Resolving the IP Address
+
+A nice feature of the ruby `resolv` stdlib is the ability to use the
+host's host file, `/etc/hosts`, to add a local file name for
+development. This is helpful when you need access to more than the
+default ports on the VM, for example when you want access to
+MailCatcher, or other utilities running on other ports.
+
+Putting an entry in your `/etc/hosts` file such as:
+
+    192.168.31.31	<%= @app_name %>.local
+
+let's you access the VM as `http://<%= @app_name %>.local:3001` in your
+browser, for example.
+
+* `<%= @app_abbr %>_HOSTSFILE` - give the name of the host machine
+  file that contains IP host name mappings. On *nix-based machines,
+  this is `/etc/hosts` which is the default. If you're hosting on a
+  Windows machine, you should look somewhere under System or System32.
+
+* `<%= @app_abbr %>_HOST_NAME` - specifies the host name given in the
+  `/etc/hosts` file. Omitting this will use `<app_name>.local`. If
+  there's no matching entry in the `/etc/hosts` file, the default IP
+  address will be 33.33.33.33.
+
+### Setting the host open port
+
+* `<%= @app_abbr %>_HOST_PORT` - the port number for the **host** port that will
+  connect to the VM's port 3001, which will be where the application
+  proxy listens.
+
+### An example
+
+These environment variables are set on the **host** side, and must be
+set for all the vagrant commands. It's best to export them into your
+working shell or set up an alias to set them inline.
+
+#### inline:
+
+``` bash
+<%= @app_abbr %>_VM_MEMORY=2048 <%= @app_abbr %>_VM_CPUS=2 vagrant up
+<%= @app_abbr %>_VM_MEMORY=2048 <%= @app_abbr %>_VM_CPUS=2 vagrant ssh
+```
+
+#### exported:
+
+``` bash
+export <%= @app_abbr %>_VM_MEMORY=2048
+export <%= @app_abbr %>_VM_CPUS=2
+vagrant up
+vagrant ssh
+```
+
+#### example alias
+
+Add the following to your local aliases (i.e. on the *host* machine):
+``` bash
+alias <%= @app_abbr.downcase %>_vagrant='<%= @app_abbr %>_VM_MEMORY=2048 <%= @app_abbr %>_VM_CPUS=2 vagrant '
+```
+and then call it as:
+``` bash
+<%= @app_abbr.downcase %>_vagrant up
+<%= @app_abbr.downcase %>_vagrant ssh
+<%= @app_abbr.downcase %>_vagrant halt
+```
+
+### Changes to an existing VM
+
+If you want to change the VM characterstics after it's already been
+created, you do so by setting the environment variables as above and
+running `vagrant reload`.
+
+*******
