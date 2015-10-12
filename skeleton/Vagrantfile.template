@@ -15,7 +15,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     dev.vm.synced_folder ".", "/home/vagrant/__APP_NAME__"
 
     dev.vm.box = "ubuntu/trusty64"
-    dev.vm.box_url = "http://files.vagrantup.com/trusty64.box"
     dev.vm.network :private_network, ip: "33.33.33.33"
     dev.vm.network "forwarded_port", guest: 3001, host: 3001
 

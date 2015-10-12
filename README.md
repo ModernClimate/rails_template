@@ -14,6 +14,11 @@
 - **Vagrant VirtualBox Guest Additions Plugin**
   - `vagrant plugin install vagrant-vbguest`
   - *Last tested on version 0.10.0*
+- *A&D Repositories*
+  - you must have access to the following A&D Repositories:
+    * https://github.com/ackmann-dickenson/ansible_ruby
+    * https://github.com/ackmann-dickenson/ansible_common
+
 
 ### New Project Setup
 
