@@ -85,10 +85,16 @@ class RailsTemplate < Thor
     @app_name = name
     @dest = File.expand_path(options.fetch("dest"))
     @app_dir = File.join(@dest, @app_name)
+    @app_abbr = abbreviate(@app_name)
   end
 
   def say_next_steps
     say HelpText::NEXT_STEPS % {app_dir: @app_dir, app_name: @app_name}, :green
+  end
+
+  # Used to create a prefix for environment variables, e.g. 'your_cool_app' => 'YCA'
+  def abbreviate(name)
+    name.split(/_/).map{|w| w[0]}.join.upcase
   end
 
 
