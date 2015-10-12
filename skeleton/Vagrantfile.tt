@@ -12,7 +12,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Development
   #
   config.vm.define :development do |dev|
-    dev.vm.synced_folder ".", "/home/vagrant/__APP_NAME__"
+    dev.vm.synced_folder ".", "/home/vagrant/<%= @app_name %>"
 
     dev.vm.box = "ubuntu/trusty64"
     dev.vm.network :private_network, ip: "33.33.33.33"
@@ -28,7 +28,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.verbose = "vvvv"
       ansible.sudo = true
       ansible.extra_vars = {
-        app_name: "__APP_NAME__"
+        app_name: "<%= @app_name %>"
       }
     end
   end
