@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "rails_template"
-  spec.version       = "0.3.0"
+  spec.version       = "0.4.0"
   spec.authors       = ["Jason Bucki", "Tamara Temple"]
   spec.email         = ["jason@ackmanndickenson.com", "ttemple@ackmanndickeson.com"]
 
