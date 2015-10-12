@@ -1,6 +1,35 @@
 # -*- mode: ruby -*-
 # vi: set ft=ruby :
 
+DEFAULT_IP = "33.33.33.33"
+
+# If you add "192.168.30.30	nc_data_service.local" to your
+# /etc/hosts file, you can then use
+# "http://nc_data_service.local:3001" to access the application. This
+# makes it easier to run more than one VM without having to worry
+# about colliding host ports.
+HOSTNAME   = ENV['NC_REMOTE_HOST'] || 'nc_data_service.local'
+HOSTFILE   = "/etc/hosts"
+
+# If you want to override the host port that maps to the VM port 3001.
+HOSTPORT   = ENV['NC_HOST_PORT'] || 3001
+
+# You can set envars to make the VM use more or less memory, number of
+# cores, and video ram. This is usually when you have to or need to
+# boost performance.
+
+VM_MEMORY  = ENV['NC_VM_MEMORY']   || "1024"
+VM_CPUS    = ENV['NC_VM_CPUS']     || "1"
+VM_VRAM    = ENV['NC_VM_VRAM']     || "8"
+
+if File.exist?(HOSTFILE)
+  require "resolv"
+  resolver = Resolv::Hosts.new(HOSTFILE)
+  @ip = resolver.getaddress(HOSTNAME) rescue DEFAULT_IP
+else
+  @ip = DEFAULT_IP
+end
+
 # Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
 VAGRANTFILE_API_VERSION = "2"
 
@@ -15,11 +44,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     dev.vm.synced_folder ".", "/home/vagrant/<%= @app_name %>"
 
     dev.vm.box = "ubuntu/trusty64"
-    dev.vm.network :private_network, ip: "33.33.33.33"
-    dev.vm.network "forwarded_port", guest: 3001, host: 3001
+    dev.vm.network :private_network, ip: @ip
+    dev.vm.network "forwarded_port", guest: 3001, host: HOSTPORT
 
+    # See the VboxManage command help to see all the parameters you
+    # can set in VirtualBox.
     dev.vm.provider :virtualbox do |vb|
-      vb.customize ["modifyvm", :id, "--memory", "1024"]
+      vb.customize ["modifyvm", :id, "--memory", VM_MEMORY]
+      vb.customize ["modifyvm", :id, "--cpus",   VM_CPUS]
+      vb.customize ["modifyvm", :id, "--vram",   VM_VRAM]
     end
 
     dev.vm.provision :ansible do |ansible|
