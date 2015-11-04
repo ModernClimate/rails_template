@@ -34,7 +34,10 @@ postgresql_default_auth_method: "trust"
 postgresql_cluster_name: "main"
 postgresql_cluster_reset: false
 
+postgresql_database_owner: vagrant
+
 postgresql_databases:
+  - name: vagrant
   - name: "{{ app_name }}_development"
     hstore: yes
     uuid_ossp: yes
@@ -46,6 +49,19 @@ postgresql_users:
   - name: vagrant
     pass: vagrant
     encrypted: no       # denotes if the password is already encrypted.
+    role_attr_flags: 'SUPERUSER'
+
+postgresql_user_privileges:
+  - name: vagrant
+    db: "{{ app_name }}_development"
+    priv: 'ALL'
+    state: present
+    role_attr_flags: 'SUPERUSER'
+  - name: vagrant
+    db: "{{ app_name }}_test"
+    priv: 'ALL'
+    state: present
+    role_attr_flags: 'SUPERUSER'
 
 nodejs:
   path: /usr/bin/nodejs
