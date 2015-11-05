@@ -1,43 +1,113 @@
 # <%= @app_name %>
 
-## Bootstrapping a New Rails App
+## Requirements
 
-### Host Machine Requirements
+All system requirements for development, test, staging, and production
+should be contained in the `./provisioning` directory and installed
+via **Ansible** provisioning. System requirements added after the
+initial provisioning should *still* be put in the `./provisioning`
+folder and the VM reprovisioning with the `vagrant provision`
+command. Only the new items needing provisioning should be installed,
+current files and working sets shouldn't be touched.
 
-- **Ansible**
-  - `brew install ansible`
-  - *Last tested on version 1.9.2*
-- **VirtualBox**
-  - [https://www.virtualbox.org/wiki/Downloads](https://www.virtualbox.org/wiki/Downloads)
-  - *Last tested on version 5.0.2*
-- **Vagrant**
-  - [http://www.vagrantup.com/downloads](http://www.vagrantup.com/downloads)
-  - *Last tested on version 1.7.4*
-- **Vagrant VirtualBox Guest Additions Plugin**
-  - `vagrant plugin install vagrant-vbguest`
-  - *Last tested on version 0.10.0*
-- **A&D Repositories**
-  - you must have access to the following A&D Repositories:
-    * https://github.com/ackmann-dickenson/ansible_ruby
-    * https://github.com/ackmann-dickenson/ansible_common
+## Bringing up an application development VM
 
+While a good perusal of the Vagrant and Ansible documentation will
+certainly help, the development VM should be able to be brought up and
+provisioned the first time with:
 
-
-### Provisioning Staging and Production Environments
-1. Create server through Rackspace UI
-  - https://mycloud.rackspace.com (see Sean Kelley-Pegg for credentials)
-2. Configure Ansible inventories
-
-```
-vim path/to/<%= @app_name %>/provisioning/inventories/staging
-vim path/to/<%= @app_name %>/provisioning/inventories/production
+``` bash
+$ vagrant up
 ```
 
-3. Bootstrap, provision, and deploy to the staging server
+Subsequent calls to `vagrant up` will bring up the VM, but no
+provisioning will be run.
 
+You connect to the VM via:
+
+``` bash
+$ vagrant ssh
 ```
-cd path/to/<%= @app_name %>/
-./provisioning/bin/bootstrap-staging
-./provisioning/bin/provision-staging
-./provisioning/bin/deploy-staging
+
+You can halt the VM via:
+
+``` bash
+$ vagrant halt
 ```
+
+## Customizing your Vagrant VM
+
+In general, on this project you should not need to customize the
+`Vagrantfile` but there is still a provision to do so. Sometimes you
+may want quite a bit more RAM or CPU horsepower to compile something
+or have more processes running at once, etc.
+
+The Vagrantfile contains some references to shell environment
+variables that you can set to customize the virtual machine.
+
+### VM Parameters
+
+* `<%= @app_name.upcase %>_VM_MEMORY` - amount of RAM to assign to the VM. It defaults to
+  1024, but you can bump this up as much as your machine can handle.
+
+* `<%= @app_name.upcase %>_VM_CPUS` - the number of cores to assign to the VM. The default
+  is 1, but if you have a multicore machine, it's helpful to give the
+  VM a couple of cores.
+
+* `<%= @app_name.upcase %>_VM_VRAM` - amount of video RAM to give the VM. The default is 8,
+  but if want to do any video work, and if you use xfvb, you might
+  need up to 12 or more.
+
+### Resolving the IP Address
+
+A nice feature of the ruby `resolv` stdlib is the ability to use the
+host's host file, `/etc/hosts`, to add a local file name for
+development. This is helpful when you need access to more than the
+default ports on the VM, for example when you want access to
+MailCatcher, or other utilities running on other ports.
+
+Putting an entry in your `/etc/hosts` file such as:
+
+    192.168.31.31 <%= @app_name %>.local
+
+let's you access the VM as `http://<%= @app_name %>.local:3001` in your
+browser, for example.
+
+* `<%= @app_name.upcase %>_REMOTE_HOST` - specifies the host name given in the `/etc/hosts`
+  file. Omitting this will use `<%= @app_name %>.local`. If there's no
+  matching entry in the `/etc/hosts` file, the default IP address will
+  be 33.33.33.33.
+
+### Setting the host open port
+
+* `<%= @app_name.upcase %>_HOST_PORT` - the port number for the **host** port that will
+  connect to the VM's port 3001, which will be where the application
+  proxy listens.
+
+### An example
+
+These environment variables are set on the **host** side, and must be
+set for all the vagrant commands. It's best to export them into your
+working shell or set up an alias to set them inline.
+
+#### inline:
+
+``` bash
+<%= @app_name.upcase %>_VM_MEMORY=2048 <%= @app_name.upcase %>_VM_CPUS=2 vagrant up
+<%= @app_name.upcase %>_VM_MEMORY=2048 <%= @app_name.upcase %>_VM_CPUS=2 vagrant ssh
+```
+
+#### exported:
+
+``` bash
+export <%= @app_name.upcase %>_VM_MEMORY=2048
+export <%= @app_name.upcase %>_VM_CPUS=2
+vagrant up
+vagrant ssh
+```
+
+### Changes to an existing VM
+
+If you want to change the VM characterstics after it's already been
+created, you do so by setting the environment variables as above and
+running `vagrant reload`.
