@@ -13,7 +13,7 @@ ruby_user_home_path: "{{ user_home }}"
 rails_app_name: "{{ app_name }}"
 rails_path: "/var/www/{{ app_name }}"
 
-postgresql_version: 9.3
+postgresql_version: 9.4
 postgresql_encoding: 'UTF-8'
 postgresql_locale: 'en_US.UTF-8'
 postgresql_admin_user: "postgres"
