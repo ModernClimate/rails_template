@@ -1,12 +1,12 @@
 ---
 - hosts: all
   roles:
-    - external/ackmann-dickenson.common
+    - internal/common
 
 - hosts: webservers
   roles:
     - external/jdauphant.nginx
-    - external/ackmann-dickenson.ruby
+    - external/calebwoods.brightbox_ruby
     - internal/rails
 
 - hosts: databases

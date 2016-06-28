@@ -72,17 +72,17 @@
         - log/sidekiq.log
 
     - name: install gems
-      command: '{{ ruby_path }}/bin/bundle install --deployment --without="development test"'
+      command: 'bundle install --deployment --without="development test"'
       args:
         chdir: '{{ this_release_path }}'
 
     - name: precompile assets
-      command: "{{ ruby_path }}/bin/rake assets:precompile chdir={{ this_release_path }}"
+      command: "rake assets:precompile chdir={{ this_release_path }}"
       environment:
         RAILS_ENV: '{{ rails_env }}'
 
     - name: migrate database
-      command: "{{ ruby_path }}/bin/rake db:migrate chdir={{ this_release_path }}"
+      command: "rake db:migrate chdir={{ this_release_path }}"
       environment:
         RAILS_ENV: '{{ rails_env }}'
 

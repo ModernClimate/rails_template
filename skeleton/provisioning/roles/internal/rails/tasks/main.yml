@@ -10,4 +10,4 @@
   file: path={{ rails_path }} state=directory owner={{ username }} group={{ username }}
 
 - name: install rails
-  command: "{{ ruby_path }}/bin/gem install rails --no-document"
+  command: "gem install rails --no-document"

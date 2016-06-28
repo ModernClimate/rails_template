@@ -2,9 +2,9 @@
 
 Gem::Specification.new do |spec|
   spec.name          = "rails_template"
-  spec.version       = "1.0.0"
+  spec.version       = "1.1.0"
   spec.authors       = ["Jason Bucki", "Tamara Temple"]
-  spec.email         = ["jason@ackmanndickenson.com", "ttemple@ackmanndickeson.com"]
+  spec.email         = ["jason@ackmanndickenson.com", "tamouse@gmail.com"]
 
   spec.summary       = "New Rails Project Generator"
   spec.description   = "New Rails Project Generator"

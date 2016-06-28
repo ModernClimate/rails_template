@@ -1,3 +1,4 @@
+# -*- yaml -*-
 ---
 username: vagrant
 password: vagrant
@@ -6,9 +7,6 @@ user_home: /home/vagrant
 ufw_tcp_ports:
   - 22
   - 3001
-
-#ruby_user_home_path: "{{ user_home }}"
-ruby_version: 2.2.3
 
 rails:
   app_name: "{{ app_name }}"
