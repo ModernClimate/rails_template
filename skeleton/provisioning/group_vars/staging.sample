@@ -1,4 +1,12 @@
 # -*- yaml -*-
+# This is a sample file to use as a vault for staging
+# It is just like the other non-vault files, and should contain the values you'll want for the staging environment
+# To create the actual vault file, however, you'll need to use the ansible-vault command:
+# (see   http://docs.ansible.com/ansible/playbooks_vault.html#creating-encrypted-files )
+#
+#     ansible-vault create staging
+#
+# NOTE!!! First you will be prompted for a password. THE PASSWORD USED WITH VAULT CURRENTLY MUST BE THE SAME FOR ALL FILES YOU WISH TO USE TOGETHER AT THE SAME TIME.
 ---
 username: deploy
 user_home: /home/{{ username }}
@@ -6,9 +14,6 @@ user_home: /home/{{ username }}
 ufw_tcp_ports:
   - 22
   - 80
-
-ruby_version: 2.2
-brightbox_ruby_version: "ruby{{ ruby_version }}"
 
 rails_app_name: "{{ app_name }}"
 rails_path: "/var/www/{{ app_name }}"

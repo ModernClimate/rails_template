@@ -1,0 +1,14 @@
+---
+- name: update apt sources
+  sudo: yes
+  apt: update_cache=yes
+
+- name: install essential software via apt
+  sudo: true
+  apt: name={{ item.package }}
+  with_items:
+    - package: build-essential
+    - package: ntp
+    - package: git
+    - package: vim
+    - package: emacs24

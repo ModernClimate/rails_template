@@ -11,14 +11,5 @@
   version: "v1.7.1"
   path : external
 
-- src: git@github.com:ackmann-dickenson/ansible_common.git
-  scm: git
-  version: master
-  path : external
-  name: ackmann-dickenson.common
-
-- src: git@github.com:ackmann-dickenson/ansible_ruby.git
-  scm: git
-  version: master
-  path : external
-  name: ackmann-dickenson.ruby
+- src: calebwoods.brightbox_ruby
+  path: external

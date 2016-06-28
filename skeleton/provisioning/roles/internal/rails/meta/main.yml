@@ -1,4 +1,3 @@
 ---
 dependencies:
-  - { role: external/ackmann-dickenson.ruby }
-
+  - { role: external/calebwoods.brightbox_ruby }
